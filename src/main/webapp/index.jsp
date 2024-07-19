@@ -1,7 +1,7 @@
 <html>
 <body>
-    <form>
-        <input type="text">
+    <form action="search">
+        <input type="text" name="keyword">
         <button type="submit">Search</button>
     </form>
 </body>
