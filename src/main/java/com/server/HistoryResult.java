@@ -1,6 +1,7 @@
 package com.server;
 
 public class HistoryResult {
+    Integer recordId;
     String keyword;
     String link;
     Integer frequency;

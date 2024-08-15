@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TomcatHostLifecycleListener implements ServletContextListener{
-
+    public static Trie trie = new Trie();
     @Override
     public void contextInitialized(ServletContextEvent e) {
         Connection connection = DatabaseConnection.getConnection();
@@ -29,5 +29,8 @@ public class TomcatHostLifecycleListener implements ServletContextListener{
             throw new RuntimeException(ex);
         }
 
+        for (HistoryResult result : results) {
+            trie.insertWord(result.getKeyword(), result.getFrequency());
+        }
     }
 }

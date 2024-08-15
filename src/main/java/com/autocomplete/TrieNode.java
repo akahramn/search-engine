@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class TrieNode {
     Map<Character, TrieNode> children;
+    Integer frequency;
     boolean endOfWord;
 
     TrieNode() {

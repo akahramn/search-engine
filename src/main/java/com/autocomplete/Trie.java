@@ -11,7 +11,7 @@ public class Trie {
         root = new TrieNode();
     }
 
-    public void insertWord(String s) {
+    public void insertWord(String s, Integer frequency) {
 
         TrieNode current = root;
         for (int i = 0; i < s.length(); i++) {
@@ -24,6 +24,7 @@ public class Trie {
             current = node;
         }
         current.endOfWord = true;
+        current.frequency = frequency;
     }
 
     public List<String> advanceSearch(String prefix){
