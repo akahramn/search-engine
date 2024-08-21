@@ -1,32 +1,16 @@
 package com.server;
 
+import lombok.*;
+
+@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class HistoryResult {
     Integer recordId;
+    @NonNull
     String keyword;
     String link;
+    @NonNull
     Integer frequency;
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public Integer getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
-    }
 }

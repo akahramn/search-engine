@@ -1,5 +1,7 @@
 package com.server;
 
+import com.elasticsearch.ElasticSearchService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,12 +18,19 @@ import java.util.ArrayList;
 @WebServlet("/Search")
 public class Search extends HttpServlet {
 
+    private final ElasticSearchService elasticSearchService;
+
+    public Search(ElasticSearchService elasticSearchService) {
+        this.elasticSearchService = elasticSearchService;
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String keyword = request.getParameter("keyword");
         try{
             Connection connection = DatabaseConnection.getConnection();
-            //check keyword exist
+            elasticSearchService.indexDocument(new HistoryResult(keyword, 1));
+            //check keyword exist if not save if exist update frequency
             ResultSet historyResultSet = connection.createStatement().executeQuery("select * from history where query like '" + keyword + "%' limit 1;");
 
             if (historyResultSet.isBeforeFirst()) {
