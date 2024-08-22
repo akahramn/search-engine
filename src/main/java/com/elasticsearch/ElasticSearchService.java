@@ -1,6 +1,7 @@
 package com.elasticsearch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -14,17 +15,14 @@ import java.io.IOException;
 
 public class ElasticSearchService {
 
-    public void indexDocument(HistoryResult historyResult) {
+    public static void indexDocument(HistoryResult historyResult) {
         // URL and API key
-        String serverUrl = "https://localhost:9200";
+        String serverUrl = "http://localhost:9200";
         String apiKey = "VnVhQ2ZHY0JDZGJrU...";
         try {
             // Create the low-level client
             RestClient restClient = RestClient
                     .builder(HttpHost.create(serverUrl))
-                    .setDefaultHeaders(new Header[]{
-                            new BasicHeader("Authorization", "ApiKey " + apiKey)
-                    })
                     .build();
 
             // Create the transport with a Jackson mapper
@@ -35,7 +33,7 @@ public class ElasticSearchService {
             ElasticsearchClient esClient = new ElasticsearchClient(transport);
 
             // Use the client...
-            esClient.index(i -> i
+            IndexResponse response = esClient.index(i -> i
                     .index("history")
                     .id(historyResult.getKeyword())
                     .document(historyResult));
