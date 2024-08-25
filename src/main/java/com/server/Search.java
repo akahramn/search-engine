@@ -1,6 +1,8 @@
 package com.server;
 
-import com.elasticsearch.ElasticSearchService;
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import com.elasticsearch.ElasticSearchConnection;
+import lombok.RequiredArgsConstructor;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 @WebServlet("/Search")
+@RequiredArgsConstructor
 public class Search extends HttpServlet {
 
     @Override
@@ -23,7 +26,13 @@ public class Search extends HttpServlet {
         String keyword = request.getParameter("keyword");
         try{
             Connection connection = DatabaseConnection.getConnection();
-              ElasticSearchService.indexDocument(new HistoryResult(keyword, 1));
+
+            ElasticsearchClient esClient = ElasticSearchConnection.getConnection();
+            esClient.index(i -> i
+                    .index("history")
+                    .id(keyword)
+                    .document(new HistoryResult(keyword, 1)));
+
             //check keyword exist if not save if exist update frequency
             ResultSet historyResultSet = connection.createStatement().executeQuery("select * from history where query like '" + keyword + "%' limit 1;");
 
