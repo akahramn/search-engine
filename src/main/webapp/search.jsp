@@ -1,5 +1,5 @@
 <%@page import = "java.util.ArrayList"%>
-<%@ page import="com.server.SearchResult" %>
+<%@ page import="com.server.page.SearchResult" %>
 
 <html>
 <head>

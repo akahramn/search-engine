@@ -3,7 +3,7 @@ package com.autocomplete;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+//for autocomplete searching
 public class Trie {
     private TrieNode root;
 

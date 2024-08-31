@@ -36,7 +36,6 @@ public class DatabaseService {
         }
     }
 
-
     public void updateHistory(Integer frequency, Integer recordId) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("update history set frequency = ? where record_id = ?");
@@ -67,6 +66,4 @@ public class DatabaseService {
             }
         }
     }
-
-
 }

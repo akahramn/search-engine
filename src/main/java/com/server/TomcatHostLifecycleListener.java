@@ -2,7 +2,9 @@ package com.server;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.autocomplete.Trie;
-import com.elasticsearch.ElasticSearchConnection;
+import com.db.DatabaseConnection;
+import com.db.elasticsearch.ElasticSearchConnection;
+import com.server.history.HistoryResult;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
