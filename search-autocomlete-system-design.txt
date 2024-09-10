@@ -1,7 +1,0 @@
-trie datastructure dbde yapılan arama loglarından olusturulacak ve haftada bir yenilenecek
--> Data gathering service
-
-  -Assume we have a frequency table as shown in Table 13-1. It has two fields.
-    • Query: it stores the query string.
-    • Frequency: it represents the number of times a query has been searched.
-
