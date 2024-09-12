@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class CrawlerService {
         urlLink= new HashSet<String>();
     }
 
+    @Scheduled(cron = "0 * * * * *")
     public void crawl(String url, Integer depth) {
         if(!urlLink.contains(url)){
             if(urlLink.add(url)){
@@ -38,7 +40,6 @@ public class CrawlerService {
                 //print text
                 System.out.println(text);
                 pageService.save(url, text);
-
 
                 //increase depth
                 depth++;
