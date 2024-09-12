@@ -1,19 +1,27 @@
 package com.abdullahkahraman.web_crawler;
 
+import com.abdullahkahraman.web_crawler.model.Page;
+import com.abdullahkahraman.web_crawler.service.PageService;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashSet;
 
-
+@Service
 public class CrawlerService {
 
     private HashSet<String> urlLink;
     private int MAX_DEPTH = 2;
-    public CrawlerService(){
+
+    private final PageService pageService;
+
+    public CrawlerService(PageService pageService){
+        this.pageService = pageService;
         urlLink= new HashSet<String>();
     }
 
@@ -29,6 +37,7 @@ public class CrawlerService {
                 String text = document.text().length()<500?document.text():document.text().substring(0, 499);
                 //print text
                 System.out.println(text);
+                pageService.save(url, text);
 
 
                 //increase depth
