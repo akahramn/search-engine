@@ -44,20 +44,13 @@ services:
       - OFFSET_STORAGE_TOPIC=my_connect_offsets
       - STATUS_STORAGE_TOPIC=my_connect_statuses
 
-  # Kafka UI hizmeti, Kafka kumesini izlemek ve yonetmek icin bir kullanici arayuzu saglar.
-  kafka-ui:
-    container_name: kafka-ui
-    image: provectuslabs/kafka-ui:latest
+  #kafka tracking
+  redpanda:
+    image: vectorized/redpanda:latest
+    networks:
+      - broker-redpanda
     ports:
-      - "9091:8080"  # Kafka UI'ya disaridan erisim saglar.
-    restart: always
-    depends_on:
-      - kafka
-      - zookeeper
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      - 8092:8092
 
   # Veritabani hizmeti, ornek bir PostgreSQL veritabanini baslatir.
   db:
@@ -76,10 +69,3 @@ services:
       - "wal_level=logical"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/create-db-tables.sql  # Ilk veritabani tablolarini olusturan SQL dosyasini yukler.
-
-  # Adminer hizmeti, veritabani yonetim arayuzu saglar.
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8001:8080  # Adminer'a disaridan erisim saglar.
