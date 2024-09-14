@@ -16,10 +16,10 @@ public class DebeziumConnectorConfig {
                 .with("database.password", "toor") // PostgreSQL veritabani kullanici parolasini belirtir.
                 .with("database.dbname", "postgres") // PostgreSQL veritabani adini belirtir.
                 .with("connector.class", "io.debezium.connector.postgresql.PostgresConnector") // PostgreSQL veritabani icin kullanilacak Debezium konektorunu belirtir.
-                //.with("database.server.id", "184054")
-                //.with("topic.prefix", "dbserver1")
-                //.with("schema.history.internal.kafka.bootstrap.servers", "59092")
-                //.with("schema.history.internal.kafka.topic", "schema-changes.inventory")
+                .with("database.server.id", "184054")
+                .with("topic.prefix", "dbserver1")
+                .with("schema.history.internal.kafka.bootstrap.servers", "59092")
+                .with("schema.history.internal.kafka.topic", "schema-changes.inventory")
                 .with("plugin.name", "pgoutput") // Debezium tarafindan kullanilacak PostgreSQL plugin adini belirtir.
                 .with("table.include.list", "postgres") // Izlenmesini istediginiz PostgreSQL tablosunu belirtir.
                 .with("tasks.max", "1") // Eszamanli gorev sayisini belirtir.
