@@ -1,4 +1,4 @@
-version: '3'
+
 services:
 
   # Kafka hizmeti, Kafka sunucusunu baslatir.
@@ -8,7 +8,7 @@ services:
     depends_on:
       - zookeeper  # Kafka'nin calisabilmesi icin ZooKeeper hizmetine baglidir.
     ports:
-      - 59092:59092  # Kafka'ya disaridan erisim saglar.
+      - 9092:9092  # Kafka'ya disaridan erisim saglar.
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181  # Kafka'nin ZooKeeper ile iletisim kurmasini saglar.
@@ -47,14 +47,13 @@ services:
   #kafka tracking
   redpanda:
     image: vectorized/redpanda:latest
-    networks:
-      - broker-redpanda
     ports:
       - 8092:8092
 
   # Veritabani hizmeti, ornek bir PostgreSQL veritabanini baslatir.
   db:
     image: debezium/example-postgres
+    platform: linux/x86_64
     restart: always
     environment:
       POSTGRES_USER: postgres
