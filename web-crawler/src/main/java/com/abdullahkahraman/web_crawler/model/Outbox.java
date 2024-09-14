@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
-@Table(name = "outbox")
+@Table(name = "outbox", schema = "public")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Outbox {
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
 
     @Column(name = "type")
     private String type;

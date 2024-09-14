@@ -30,6 +30,13 @@
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.17.0</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
 			<groupId>org.jsoup</groupId>
@@ -72,16 +79,25 @@
 			<artifactId>debezium-embedded</artifactId>
 			<version>2.5.0.Final</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
-			<groupId>io.debezium</groupId>
-			<artifactId>debezium-connector-mysql</artifactId>
-			<version>2.5.0.Final</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.4</version>
 		</dependency>
-        <dependency>
+
+		<dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-    </dependencies>
+
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-connector-postgres</artifactId>
+			<version>2.3.4.Final</version> <!-- Kullanmak istediğiniz versiyon -->
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<plugins>

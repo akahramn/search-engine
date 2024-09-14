@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import static io.debezium.data.Envelope.Operation;
 
 import java.util.Map;
 
@@ -22,15 +23,16 @@ public class OutboxService {
         return outboxRepository.save(outbox);
     }
 
-    public void debeziumDatabaseChange(Map<String, Object> payload) {
-        log.info("Debezium payload: {}", payload);
-        try {
-            kafkaPublisher.publish("account-created", MAPPER.writeValueAsString(payload));
-            var x = MAPPER.writeValueAsString(payload);
-            log.info("Debezium payload string: {}", x);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public void debeziumDatabaseChange(Map<String, Object> customerData, Operation operation) {
+        System.out.println(customerData + "////////" + operation);
+//        log.info("Debezium payload: {}", payload);
+//        try {
+//            kafkaPublisher.publish("account-created", MAPPER.writeValueAsString(payload));
+//            var x = MAPPER.writeValueAsString(payload);
+//            log.info("Debezium payload string: {}", x);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
 }
