@@ -4,6 +4,7 @@ import com.abdullahkahraman.web_crawler.model.Outbox;
 import com.abdullahkahraman.web_crawler.publisher.KafkaPublisher;
 import com.abdullahkahraman.web_crawler.repository.OutboxRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,23 +17,23 @@ import java.util.Map;
 public class OutboxService {
 
     private final OutboxRepository outboxRepository;
-    private final KafkaPublisher kafkaPublisher;
     private final ObjectMapper MAPPER = new ObjectMapper();
+    private final KafkaPublisher kafkaPublisher;
 
     public Outbox createOutbox(Outbox outbox) {
         return outboxRepository.save(outbox);
     }
 
-    public void debeziumDatabaseChange(Map<String, Object> customerData, Operation operation) {
-        System.out.println(customerData + "////////" + operation);
-//        log.info("Debezium payload: {}", payload);
-//        try {
-//            kafkaPublisher.publish("account-created", MAPPER.writeValueAsString(payload));
-//            var x = MAPPER.writeValueAsString(payload);
-//            log.info("Debezium payload string: {}", x);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
+    public void debeziumDatabaseChange(Map<String, Object> pageData, String operation) {
+        Outbox outbox = new Outbox();
+        outbox.setType(operation);
+        outbox.setPayload(pageData.toString());
+
+        try {
+            kafkaPublisher.publish("crawler-operation", MAPPER.writeValueAsString(outbox));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
