@@ -69,16 +69,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.debezium</groupId>
-			<artifactId>debezium-api</artifactId>
-			<version>2.5.0.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>io.debezium</groupId>
-			<artifactId>debezium-embedded</artifactId>
-			<version>2.5.0.Final</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -93,8 +83,18 @@
 
 		<dependency>
 			<groupId>io.debezium</groupId>
+			<artifactId>debezium-api</artifactId>
+			<version>2.5.2.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
+			<artifactId>debezium-embedded</artifactId>
+			<version>2.5.2.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>io.debezium</groupId>
 			<artifactId>debezium-connector-postgres</artifactId>
-			<version>2.3.4.Final</version> <!-- Kullanmak istediğiniz versiyon -->
+			<version>2.5.2.Final</version>
 		</dependency>
 
 	</dependencies>
