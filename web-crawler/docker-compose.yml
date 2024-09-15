@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
 
@@ -6,16 +7,17 @@ services:
     image: confluentinc/cp-kafka:latest
     container_name: kafka-broker
     depends_on:
-      - zookeeper  # Kafka'nin calisabilmesi icin ZooKeeper hizmetine baglidir.
+      - zookeeper
     ports:
       - 9092:9092  # Kafka'ya disaridan erisim saglar.
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181  # Kafka'nin ZooKeeper ile iletisim kurmasini saglar.
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:59092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1  # Offset konularinin cogaltma faktorunu ayarlar.
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   # ZooKeeper hizmeti, Kafka icin koordinasyon ve konfigurasyon depolama saglar.
   zookeeper:
@@ -24,9 +26,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-      ZK_SERVER_HEAP: "-Xmx256M -Xms256M"  # ZooKeeper'in bellek yapilandirmalarini belirler.
+      ZK_SERVER_HEAP: "-Xmx256M -Xms256M"
     ports:
-      - 52181:2181  # ZooKeeper'a disaridan erisim saglar.
+      - 52181:2181
 
   # Kafka Connect hizmeti, Kafka veri akislarini kaydetmek ve islemek icin kullanilir.
   kafka_connect:
@@ -36,17 +38,21 @@ services:
       - db
       - kafka
     ports:
-      - '8083:8083'  # Kafka Connect REST API'ya disaridan erisim saglar.
+      - '8083:8083'
     environment:
-      - BOOTSTRAP_SERVERS=kafka:9092  # Kafka sunucusuna baglanma ayarlarini tanimlar.
+      - BOOTSTRAP_SERVERS=kafka:9092
       - GROUP_ID=medium_debezium
       - CONFIG_STORAGE_TOPIC=my_connect_configs
       - OFFSET_STORAGE_TOPIC=my_connect_offsets
       - STATUS_STORAGE_TOPIC=my_connect_statuses
 
-  #kafka tracking
+  # Kafka tracking
   redpanda:
-    image: vectorized/redpanda:latest
+    image: docker.redpanda.com/redpandadata/console:latest
+    restart: always
+    container_name: redpanda
+    environment:
+      KAFKA_BROKERS: kafka:9092  # Kafka broker'larının adresini belirtir.
     ports:
       - 8092:8092
 
@@ -59,7 +65,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: toor
     ports:
-      - 5432:5432  # PostgreSQL veritabanina disaridan erisim saglar.
+      - 5432:5432
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command:
@@ -67,4 +73,4 @@ services:
       - "-c"
       - "wal_level=logical"
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/create-db-tables.sql  # Ilk veritabani tablolarini olusturan SQL dosyasini yukler.
+      - ./init.sql:/docker-entrypoint-initdb.d/create-db-tables.sql
