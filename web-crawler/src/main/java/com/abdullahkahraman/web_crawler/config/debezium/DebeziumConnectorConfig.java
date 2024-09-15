@@ -1,31 +1,67 @@
 package com.abdullahkahraman.web_crawler.config.debezium;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class DebeziumConnectorConfig {
 
-    @Bean
-    public io.debezium.config.Configuration configuration() {
-        return io.debezium.config.Configuration.create()
-                .with("name", "outbox-postgres") // Debezium konektorunun adini belirtir.
-                .with("database.hostname", "localhost") // PostgreSQL veritabaninin ana bilgisayar adini belirtir.
-                .with("database.port", "5432") // PostgreSQL veritabaninin baglanti noktasini belirtir.
-                .with("database.user", "postgres") // PostgreSQL veritabani kullanici adini belirtir.
-                .with("database.password", "toor") // PostgreSQL veritabani kullanici parolasini belirtir.
-                .with("database.dbname", "postgres") // PostgreSQL veritabani adini belirtir.
-                .with("connector.class", "io.debezium.connector.postgresql.PostgresConnector") // PostgreSQL veritabani icin kullanilacak Debezium konektorunu belirtir.
-                .with("database.server.id", "184054")
-                .with("topic.prefix", "dbserver1")
-                .with("schema.history.internal.kafka.bootstrap.servers", "59092")
-                .with("schema.history.internal.kafka.topic", "schema-changes.inventory")
-                .with("plugin.name", "pgoutput") // Debezium tarafindan kullanilacak PostgreSQL plugin adini belirtir.
-                .with("table.include.list", "postgres") // Izlenmesini istediginiz PostgreSQL tablosunu belirtir.
-                .with("tasks.max", "1") // Eszamanli gorev sayisini belirtir.
-                .build();
+    @Value("${db.host}")
+    private String dbHost;
+    @Value("${db.port}")
+    private String dbPort;
+    @Value("${db.username}")
+    private String postgresUsername;
+    @Value("${db.password}")
+    private String postgresPassword;
+    @Value("${schema.include.list}")
+    private String schemaIncludeList;
+    @Value("${table.include.list}")
+    private String tableIncludeList;
 
-        //.with("database.password", "toor") // PostgreSQL veritabani kullanici parolasini belirtir.
-        // .with("skipped.operations", "t,d") // Atlanan islem turlerini belirtir. // c for inserts/create, u for updates, d for deletes, t for truncates, and none to not skip any operations
+    @Bean
+    public io.debezium.config.Configuration postgresConnector() {
+        Map<String, String> configMap = new HashMap<>();
+
+        //This sets the name of the Debezium connector instance. It’s used for logging and metrics.
+        configMap.put("name", "crawler-cdc-connector");
+        //This specifies the Java class for the connector. Debezium uses this to create the connector instance.
+        configMap.put("connector.class", "io.debezium.connector.postgresql.PostgresConnector");
+
+        //This sets the Java class that Debezium uses to store the progress of the connector. (offest)
+        /* Not-working
+        In this case, it’s using a JDBC-based store, which means it will store the progress in a relational database.
+        configMap.put("offset.storage", "io.debezium.storage.jdbc.offset.JdbcOffsetBackingStore");
+        //This is the JDBC URL for the database where Debezium stores the connector offsets (progress).
+        configMap.put("offset.storage.jdbc.url", dbUrl);
+        configMap.put("offset.storage.jdbc.user", postgresUsername);
+        configMap.put("offset.storage.jdbc.password", postgresPassword);
+        */
+
+        File offsetStorageTempFile = new File("offsets_.dat");
+        configMap.put("offset.storage",  "org.apache.kafka.connect.storage.FileOffsetBackingStore");
+        configMap.put("offset.storage.file.filename", offsetStorageTempFile.getAbsolutePath());
+        configMap.put("offset.flush.interval.ms", "60000");
+
+        //Connect Debezium connector to the source DB
+        configMap.put("database.hostname", dbHost);
+        configMap.put("database.port", dbPort);
+        configMap.put("database.user", postgresUsername);
+        configMap.put("database.password", postgresPassword);
+        configMap.put("database.dbname", "postgres");
+        configMap.put("database.server.name", "postgres"); //Why is this used?
+        configMap.put("plugin.name", "pgoutput");
+
+        configMap.put("schema.include.list", schemaIncludeList);
+        configMap.put("table.include.list", tableIncludeList);
+
+        configMap.put("topic.prefix", "cdc_"); //Why is this needed here?
+
+        return io.debezium.config.Configuration.from(configMap);
     }
 }
