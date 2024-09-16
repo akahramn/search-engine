@@ -55,7 +55,6 @@ public class DebeziumSourceEventListener {
         JsonNode payload;
 
         try {
-            // JSON verisini parse et
             payload = objectMapper.readTree(value).get("payload");
         }  catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -33,16 +33,6 @@ public class DebeziumConnectorConfig {
         //This specifies the Java class for the connector. Debezium uses this to create the connector instance.
         configMap.put("connector.class", "io.debezium.connector.postgresql.PostgresConnector");
 
-        //This sets the Java class that Debezium uses to store the progress of the connector. (offest)
-        /* Not-working
-        In this case, it’s using a JDBC-based store, which means it will store the progress in a relational database.
-        configMap.put("offset.storage", "io.debezium.storage.jdbc.offset.JdbcOffsetBackingStore");
-        //This is the JDBC URL for the database where Debezium stores the connector offsets (progress).
-        configMap.put("offset.storage.jdbc.url", dbUrl);
-        configMap.put("offset.storage.jdbc.user", postgresUsername);
-        configMap.put("offset.storage.jdbc.password", postgresPassword);
-        */
-
         File offsetStorageTempFile = new File("offsets_.dat");
         configMap.put("offset.storage",  "org.apache.kafka.connect.storage.FileOffsetBackingStore");
         configMap.put("offset.storage.file.filename", offsetStorageTempFile.getAbsolutePath());

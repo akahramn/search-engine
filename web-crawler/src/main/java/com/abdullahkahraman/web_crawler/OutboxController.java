@@ -16,7 +16,7 @@ public class OutboxController {
 
     @PostMapping
     public String post() {
-        outboxService.createOutbox(new Outbox(5L,"dfgdfg", "tedfgdfggfst"));
+        outboxService.createOutbox(new Outbox("test", "test"));
         return "Posted";
     }
 }

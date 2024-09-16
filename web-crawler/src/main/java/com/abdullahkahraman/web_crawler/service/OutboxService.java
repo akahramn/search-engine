@@ -30,8 +30,8 @@ public class OutboxService {
         outbox.setPayload(pageData.toString());
 
         try {
-            kafkaPublisher.publish("crawler-operation", MAPPER.writeValueAsString(outbox));
-        } catch (JsonProcessingException e) {
+            kafkaPublisher.publish("crawler-operation", new ObjectMapper().writeValueAsString(outbox));
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

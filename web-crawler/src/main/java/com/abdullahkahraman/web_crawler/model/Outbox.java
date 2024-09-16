@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Table(name = "outbox", schema = "public")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Outbox {
     @Id
     @GeneratedValue
@@ -21,4 +19,12 @@ public class Outbox {
 
     @Column(name = "payload")
     private String payload;
+
+    public Outbox() {
+    }
+
+    public Outbox(String type, String payload) {
+        this.type = type;
+        this.payload = payload;
+    }
 }
