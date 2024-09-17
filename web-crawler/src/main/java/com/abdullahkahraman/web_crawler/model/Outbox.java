@@ -1,10 +1,7 @@
 package com.abdullahkahraman.web_crawler.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity
 @Table(name = "outbox", schema = "public")
@@ -17,7 +14,7 @@ public class Outbox {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "payload")
+    @Column(name = "payload", columnDefinition = "TEXT")
     private String payload;
 
     public Outbox() {
