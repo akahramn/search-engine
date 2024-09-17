@@ -1,5 +1,7 @@
 package com.abdullahkahraman.web_crawler.util;
 
+import com.abdullahkahraman.web_crawler.model.Outbox;
+import com.abdullahkahraman.web_crawler.model.Page;
 import com.abdullahkahraman.web_crawler.service.OutboxService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -50,6 +52,7 @@ public class DebeziumSourceEventListener {
     }
 
     private void handleEvent(ChangeEvent<String, String> event) {
+
         String value = event.value();
         Map<String, Object> map = new HashMap<>();
         JsonNode payload;
@@ -66,11 +69,17 @@ public class DebeziumSourceEventListener {
         // "after" alanı (değişiklik sonrası değerler)
         JsonNode after = payload.get("after");
         JsonNode before = payload.get("before");
+        if (after != null) {
+            Page pageIndex = new Page();
+            try {
+                pageIndex = new ObjectMapper().treeToValue(after, Page.class);
+            } catch (JsonProcessingException e) {
+                System.out.println(e.getMessage());
+            }
 
-        map.put("after", after);
-        map.put("before", before);
+            outboxService.debeziumDatabaseChange(pageIndex);
+        }
 
-        outboxService.debeziumDatabaseChange(map, operation);
     }
 
     @PostConstruct

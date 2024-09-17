@@ -26,7 +26,14 @@ public class CrawlerService {
         urlLink= new HashSet<String>();
     }
 
+
     @Scheduled(cron = "0 * * * * *")
+    public void indexPage() {
+        String url = "https://www.javatpoint.com/";
+        Integer depth = 1;
+        crawl(url, depth);
+    }
+
     public void crawl(String url, Integer depth) {
         if(!urlLink.contains(url)){
             if(urlLink.add(url)){
@@ -39,7 +46,7 @@ public class CrawlerService {
                 String text = document.text().length()<500?document.text():document.text().substring(0, 499);
                 //print text
                 System.out.println(text);
-                pageService.save(url, text);
+                pageService.save(url, text, document.title());
 
                 //increase depth
                 depth++;
