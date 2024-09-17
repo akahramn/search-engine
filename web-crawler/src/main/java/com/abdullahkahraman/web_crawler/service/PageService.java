@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 public class PageService {
 
     private final PageRepository pageRepository;
+    private final OutboxService outboxService;
 
-    public void save(String url, String text) {
+    public void save(String url, String text, String title) {
         Page page = new Page();
         page.setLink(url);
         page.setText(text);
-        pageRepository.save(page);
+        page.setTitle(title);
+        Page savedPage = pageRepository.save(page);
+        outboxService.createOutbox(savedPage);
     }
 }

@@ -17,6 +17,7 @@ public class PageIndexController {
 
     @GetMapping("/search")
     public ResponseEntity<?> search() {
+        pageIndexService.find();
         return ResponseEntity.ok().body("Hello World");
     }
 }
