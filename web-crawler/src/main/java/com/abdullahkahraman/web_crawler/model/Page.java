@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 public class Page {
     @Id
     @GeneratedValue
-    @Column(name = "record_id")
-    private Long recordId;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "link")
+    @Column(name = "link", length = 1000)
     private String link;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 1000)
     private String text;
 
-    @Column(name = "title")
+    @Column(name = "title", length = 1000)
     private String title;
 }
