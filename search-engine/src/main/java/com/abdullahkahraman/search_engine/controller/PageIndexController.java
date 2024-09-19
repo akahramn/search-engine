@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,12 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PageIndexController {
 
-
     private final PageIndexService pageIndexService;
 
     @GetMapping("/search")
-    public ResponseEntity<?> search() {
-        pageIndexService.find();
-        return ResponseEntity.ok().body("Hello World");
+    public ResponseEntity<?> search(@RequestParam("query") String query) {
+        return ResponseEntity.ok().body(pageIndexService.fetchPageIndexesWithKeyword(query));
     }
 }
