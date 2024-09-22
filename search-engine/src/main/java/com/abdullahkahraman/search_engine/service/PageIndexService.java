@@ -1,21 +1,23 @@
 package com.abdullahkahraman.search_engine.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
+import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.abdullahkahraman.search_engine.dto.SearchResponseDto;
+import com.abdullahkahraman.search_engine.mapper.PageIndexMapper;
 import com.abdullahkahraman.search_engine.model.PageIndex;
 import com.abdullahkahraman.search_engine.repository.PageIndexRepository;
-import com.abdullahkahraman.search_engine.util.ESUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,19 +36,36 @@ public class PageIndexService {
         pageIndexRepository.findAll();
     }
 
-    public List<PageIndex> fetchPageIndexesWithKeyword(String keyword) {
-        SearchResponse<PageIndex> response = null;
+    public List<SearchResponseDto> fetchPageIndexesWithKeyword(String keyword) {
+        List<SearchResponseDto> response = new ArrayList<>();
         try {
-            //sorgu olustur
-            Supplier<Query> querySupplier = ESUtil.buildQueryForKeyword(keyword);
+            SearchResponse<PageIndex> searchResponse = elasticsearchClient.search(s -> s
+                            .index("page_index")
+                            .query(q -> q
+                                    .multiMatch(v -> v
+                                            .fields("title^2", "text^1", "link^0.5") // Title alanına daha yüksek ağırlık verdik (boost)
+                                            .query(keyword)
+                                            .operator(Operator.And)    // AND operatörünü kullandık
+                                            .type(TextQueryType.BestFields) // En uygun alanları hedefleyen query tipi
+                                            .fuzziness("2")
+                                            .fuzzyTranspositions(true)
+                                            .minimumShouldMatch("3")
+                                    )
+                            ),
+                    PageIndex.class
+            );
+            // Sonuçları işleme
+            List<PageIndex> pageIndexList = extractItemsFromResponse(searchResponse);
 
-            //sorguyu calistir ve cevabi alir
-            response = elasticsearchClient.search(q -> q.index("page_index")
-                    .query(querySupplier.get()), PageIndex.class);
+            for (PageIndex pageIndex : pageIndexList) {
+                SearchResponseDto searchResponseDto = PageIndexMapper.INSTANCE.pageIndexToSearchResponseDto(pageIndex);
+                response.add(searchResponseDto);
+            }
+            return response;
         } catch (Exception e) {
-            log.error(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-        return extractItemsFromResponse(response);
     }
 
     public List<PageIndex> extractItemsFromResponse(SearchResponse<PageIndex> response) {
@@ -63,6 +82,9 @@ public class PageIndexService {
         System.out.println("Received Message in group foo: " + message);
 
         PageIndex pageIndex = new ObjectMapper().readValue(message, PageIndex.class);
-        savePageIndex(pageIndex);
+        if (pageIndex != null && pageIndex.getId() != null) {
+            savePageIndex(pageIndex);
+        }
+
     }
 }
