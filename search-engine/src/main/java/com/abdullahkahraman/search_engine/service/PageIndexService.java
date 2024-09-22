@@ -43,10 +43,10 @@ public class PageIndexService {
                             .index("page_index")
                             .query(q -> q
                                     .multiMatch(v -> v
-                                            .fields("title^2", "text^1", "link^0.5") // Title alanına daha yüksek ağırlık verdik (boost)
+                                            .fields("text")
                                             .query(keyword)
-                                            .operator(Operator.And)    // AND operatörünü kullandık
-                                            .type(TextQueryType.BestFields) // En uygun alanları hedefleyen query tipi
+                                            .operator(Operator.And)
+                                            .type(TextQueryType.BestFields)
                                             .fuzziness("2")
                                             .fuzzyTranspositions(true)
                                             .minimumShouldMatch("3")

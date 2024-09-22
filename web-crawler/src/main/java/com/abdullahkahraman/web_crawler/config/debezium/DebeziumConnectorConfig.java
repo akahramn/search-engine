@@ -41,11 +41,11 @@ public class DebeziumConnectorConfig {
         configMap.put("database.user", postgresUsername);
         configMap.put("database.password", postgresPassword);
         configMap.put("database.dbname", "postgres");
-        configMap.put("database.server.name", "postgres"); //Why is this used?
+        configMap.put("database.server.name", "postgres");
         configMap.put("plugin.name", "pgoutput");
         configMap.put("schema.include.list", schemaIncludeList);
         configMap.put("table.include.list", tableIncludeList);
-        configMap.put("topic.prefix", "cdc_"); //Why is this needed here?
+        configMap.put("topic.prefix", "cdc_");
         return io.debezium.config.Configuration.from(configMap);
     }
 }

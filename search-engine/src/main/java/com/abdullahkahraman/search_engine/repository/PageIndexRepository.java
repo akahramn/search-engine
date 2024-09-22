@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PageIndexRepository extends ElasticsearchRepository<PageIndex, String> {
 
-    PageIndex findByTitle(String title);
 }

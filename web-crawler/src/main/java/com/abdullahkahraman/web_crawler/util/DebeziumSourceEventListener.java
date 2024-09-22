@@ -47,7 +47,6 @@ public class DebeziumSourceEventListener {
 
     private void handleEvent(ChangeEvent<String, String> event) {
         String value = event.value();
-        Map<String, Object> map = new HashMap<>();
         JsonNode payload;
         try {
             payload = objectMapper.readTree(value).get("payload");
