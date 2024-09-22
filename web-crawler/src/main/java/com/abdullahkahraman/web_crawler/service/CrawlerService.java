@@ -1,8 +1,5 @@
-package com.abdullahkahraman.web_crawler;
+package com.abdullahkahraman.web_crawler.service;
 
-import com.abdullahkahraman.web_crawler.model.Page;
-import com.abdullahkahraman.web_crawler.service.PageService;
-import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,7 +27,7 @@ public class CrawlerService {
     @Scheduled(cron = "0 * * * * *")
     public void indexPage() {
         String url = "https://www.javatpoint.com/";
-        Integer depth = 1;
+        Integer depth = 0;
         crawl(url, depth);
     }
 
@@ -47,7 +44,6 @@ public class CrawlerService {
                 //print text
                 System.out.println(text);
                 pageService.save(url, text, document.title());
-
                 //increase depth
                 depth++;
                 //if depth is greater than max then return
