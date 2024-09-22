@@ -27,17 +27,14 @@ public class DebeziumConnectorConfig {
     @Bean
     public io.debezium.config.Configuration postgresConnector() {
         Map<String, String> configMap = new HashMap<>();
-
         //This sets the name of the Debezium connector instance. It’s used for logging and metrics.
         configMap.put("name", "crawler-cdc-connector");
         //This specifies the Java class for the connector. Debezium uses this to create the connector instance.
         configMap.put("connector.class", "io.debezium.connector.postgresql.PostgresConnector");
-
         File offsetStorageTempFile = new File("offsets_.dat");
         configMap.put("offset.storage",  "org.apache.kafka.connect.storage.FileOffsetBackingStore");
         configMap.put("offset.storage.file.filename", offsetStorageTempFile.getAbsolutePath());
         configMap.put("offset.flush.interval.ms", "60000");
-
         //Connect Debezium connector to the source DB
         configMap.put("database.hostname", dbHost);
         configMap.put("database.port", dbPort);
@@ -46,12 +43,9 @@ public class DebeziumConnectorConfig {
         configMap.put("database.dbname", "postgres");
         configMap.put("database.server.name", "postgres"); //Why is this used?
         configMap.put("plugin.name", "pgoutput");
-
         configMap.put("schema.include.list", schemaIncludeList);
         configMap.put("table.include.list", tableIncludeList);
-
         configMap.put("topic.prefix", "cdc_"); //Why is this needed here?
-
         return io.debezium.config.Configuration.from(configMap);
     }
 }
